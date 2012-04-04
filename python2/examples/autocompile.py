@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 #
 # Usage:
-#   ./autocompile.py path ext1,ext2,extn cmd
+#   ./auto_generate.py path ext1,ext2,extn cmd
 #
 # Blocks monitoring |path| and its subdirectories for modifications on
 # files ending with suffix |extk|. Run |cmd| each time a modification
-# is detected. |cmd| is optional and defaults to 'make'.
+# is detected. |cmd| is shall be our .kv code generator.
 #
 # Example:
-#   ./autocompile.py /my-latex-document-dir .tex,.bib "make pdf"
+#   ./auto_generate.py /my-kivy-project-dir temp_graph_format "make .kv file"
 #
 # Dependencies:
 #   Linux, Python 2.6, Pyinotify
@@ -32,7 +32,7 @@ class OnWriteHandler(pyinotify.ProcessEvent):
             return
         self._run_cmd()
 
-def auto_compile(path, extension, cmd):
+def auto_generate(path, extension, cmd):
     wm = pyinotify.WatchManager()
     handler = OnWriteHandler(cwd=path, extension=extension, cmd=cmd)
     notifier = pyinotify.Notifier(wm, default_proc_fun=handler)
@@ -48,11 +48,12 @@ if __name__ == '__main__':
     # Required arguments
     path = sys.argv[1]
     extension = sys.argv[2]
+    #Need to work out what extension the temporary graph datastructure will be stored in.
 
     # Optional argument
-    cmd = 'make'
+    cmd = 'generate .kv file'
     if len(sys.argv) == 4:
         cmd = sys.argv[3]
 
     # Blocks monitoring
-    auto_compile(path, extension, cmd)
+    auto_generate(path, extension, cmd)
